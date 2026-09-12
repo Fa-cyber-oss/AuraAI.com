@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-accent="violet">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aura 3D — Liquid Glass Intelligence</title>
+  
+  <!-- Premium Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Highlight.js for Syntax Highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark-dimmed.min.css" id="hljs-theme">
+  
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <!-- 3D Interactive Live Wallpaper Canvas -->
+  <canvas id="liveWallpaperCanvas"></canvas>
+
+  <div class="app-container">
+    <!-- Liquid Glass Sidebar -->
+    <aside class="sidebar liquid-glass" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-badge" data-tilt="true">
+          <div class="brand-gem-3d">
+            <span class="gem-sparkle">✦</span>
+          </div>
+          <div class="brand-info">
+            <span class="brand-text">Aura 3D</span>
+            <span class="brand-subtext">Liquid Glass</span>
+          </div>
+        </div>
+        <button class="icon-btn close-sidebar-btn" id="closeSidebarBtn" title="Close sidebar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="sidebar-actions">
+        <button class="new-chat-btn liquid-btn" id="newChatBtn" data-tilt="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span>New Chat</span>
+        </button>
+      </div>
+
+      <!-- Quick Search in History -->
+      <div class="sidebar-search-box">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="chatSearchInput" placeholder="Search conversations..." autocomplete="off">
+      </div>
+
+      <div class="sidebar-history-label">
+        <span>Conversations</span>
+        <span class="chat-count-badge" id="chatCountBadge">0</span>
+      </div>
+
+      <div class="chat-history-list" id="chatHistoryList">
+        <!-- Dynamic chat sessions will be rendered here -->
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="sidebar-footer-btn" id="exportChatBtn" title="Export current chat to Markdown">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Export Conversation</span>
+        </button>
+        <button class="sidebar-footer-btn" id="clearAllBtn" title="Clear all history">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+          <span>Clear All Chats</span>
+        </button>
+        <button class="sidebar-footer-btn" id="openSettingsBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+          <span>Preferences & 3D Settings</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main 3D Stage -->
+    <main class="main-content">
+      <!-- Top Liquid Glass Navbar -->
+      <header class="top-nav liquid-glass">
+        <div class="nav-left">
+          <button class="icon-btn toggle-sidebar-btn" id="openSidebarBtn" title="Toggle Sidebar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="9" y1="3" x2="9" y2="21"></line>
+            </svg>
+          </button>
+          
+          <!-- Custom Liquid Glass 3D Model Picker -->
+          <div class="custom-model-picker" id="customModelPicker">
+            <button type="button" class="liquid-model-trigger liquid-glass" id="modelTriggerBtn" data-tilt="true">
+              <span class="trigger-orb">✦</span>
+              <div class="trigger-text-col">
+                <span class="trigger-title" id="currentModelName">Gemini 3.6 Flash</span>
+                <span class="trigger-sub" id="currentModelProvider">Google AI • Recommended</span>
+              </div>
+              <svg class="trigger-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+
+            <!-- Floating Liquid Glass Dropdown Menu -->
+            <div class="liquid-model-menu liquid-glass" id="modelDropdownMenu">
+              <div class="menu-glass-header">
+                <span>Select AI Architecture</span>
+                <span class="menu-pill-tag">Ultra 3D</span>
+              </div>
+              
+              <div class="model-options-list" id="modelOptionsList">
+                <button type="button" class="model-card-item active" data-model="gemini-3.6-flash" data-provider="Google AI • Recommended" data-name="Gemini 3.6 Flash">
+                  <div class="item-icon-box icon-gemini">⚡</div>
+                  <div class="item-info">
+                    <div class="item-header-line">
+                      <span class="item-name">Gemini 3.6 Flash</span>
+                      <span class="item-badge-rec">Recommended</span>
+                    </div>
+                    <span class="item-desc">Ultra-fast next-gen Google model with supreme reasoning</span>
+                  </div>
+                  <div class="item-check">✓</div>
+                </button>
+
+                <button type="button" class="model-card-item" data-model="gemini-2.5-flash" data-provider="Google AI" data-name="Gemini 2.5 Flash">
+                  <div class="item-icon-box icon-gemini">✨</div>
+                  <div class="item-info">
+                    <div class="item-header-line">
+                      <span class="item-name">Gemini 2.5 Flash</span>
+                      <span class="item-badge-std">Google</span>
+                    </div>
+                    <span class="item-desc">High efficiency, great speed, and deep understanding</span>
+                  </div>
+                  <div class="item-check">✓</div>
+                </button>
+
+                <button type="button" class="model-card-item" data-model="gemini-1.5-flash" data-provider="Google AI" data-name="Gemini 1.5 Flash">
+                  <div class="item-icon-box icon-gemini">🔹</div>
+                  <div class="item-info">
+                    <div class="item-header-line">
+                      <span class="item-name">Gemini 1.5 Flash</span>
+                      <span class="item-badge-std">Google</span>
+                    </div>
+                    <span class="item-desc">Lightweight everyday model for quick answers</span>
+                  </div>
+                  <div class="item-check">✓</div>
+                </button>
+
+                <button type="button" class="model-card-item" data-model="gemini-1.5-pro" data-provider="Google AI • Pro" data-name="Gemini 1.5 Pro">
+                  <div class="item-icon-box icon-gemini">🧠</div>
+                  <div class="item-info">
+                    <div class="item-header-line">
+                      <span class="item-name">Gemini 1.5 Pro</span>
+                      <span class="item-badge-pro">Pro</span>
+                    </div>
+                    <span class="item-desc">Complex mathematical, logical, and code analysis</span>
+                  </div>
+                  <div class="item-check">✓</div>
+                </button>
+
+                <button type="button" class="model-card-item" data-model="gpt-4o" data-provider="OpenAI" data-name="GPT-4o (ChatGPT)">
+                  <div class="item-icon-box icon-openai">🟢</div>
+                  <div class="item-info">
+                    <div class="item-header-line">
+                      <span class="item-name">GPT-4o (ChatGPT)</span>
+                      <span class="item-badge-std">OpenAI</span>
+                    </div>
+                    <span class="item-desc">OpenAI flagship omni model for high intelligence</span>
+                  </div>
+                  <div class="item-check">✓</div>
+                </button>
+
+                <button type="button" class="model-card-item" data-model="gpt-4o-mini" data-provider="OpenAI" data-name="GPT-4o Mini">
+                  <div class="item-icon-box icon-openai">🌿</div>
+                  <div class="item-info">
+                    <div class="item-header-line">
+                      <span class="item-name">GPT-4o Mini</span>
+                      <span class="item-badge-std">OpenAI</span>
+                    </div>
+                    <span class="item-desc">Affordable, quick OpenAI model</span>
+                  </div>
+                  <div class="item-check">✓</div>
+                </button>
+
+                <button type="button" class="model-card-item" data-model="demo" data-provider="Free • Offline" data-name="Demo Assistant">
+                  <div class="item-icon-box icon-demo">🤖</div>
+                  <div class="item-info">
+                    <div class="item-header-line">
+                      <span class="item-name">Demo Assistant</span>
+                      <span class="item-badge-free">Free / Instant</span>
+                    </div>
+                    <span class="item-desc">No API key required, instant offline simulation</span>
+                  </div>
+                  <div class="item-check">✓</div>
+                </button>
+              </div>
+            </div>
+
+            <!-- Virtual input syncing with backend -->
+            <input type="hidden" id="modelSelect" value="gemini-3.6-flash">
+          </div>
+        </div>
+
+        <div class="nav-right">
+          <!-- 3D Status Indicator -->
+          <div class="status-pill liquid-pill">
+            <span class="status-dot"></span>
+            <span class="status-text">3D Active</span>
+          </div>
+
+          <button class="icon-btn" id="themeToggleBtn" title="Toggle Dark/Light Mode">
+            <svg class="sun-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+            <svg class="moon-icon" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
+
+          <button class="icon-btn" id="navSettingsBtn" title="Settings & API Keys">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Chat Viewport -->
+      <div class="chat-viewport" id="chatViewport">
+        <!-- Hero Section with 3D Holographic AI Core -->
+        <div class="welcome-screen" id="welcomeScreen">
+          <!-- 3D Holographic Gyro Core -->
+          <div class="hologram-3d-wrapper" id="hologram3dWrapper" data-tilt="true">
+            <div class="orbital-ring ring-1"></div>
+            <div class="orbital-ring ring-2"></div>
+            <div class="orbital-ring ring-3"></div>
+            <div class="core-crystal">
+              <div class="core-plasma"></div>
+              <span class="core-sparkle">✦</span>
+            </div>
+            <div class="core-shadow"></div>
+          </div>
+          
+          <h1 class="welcome-title liquid-text">What can I create for you?</h1>
+          <p class="welcome-subtitle">Ask anything, write code, explore ideas, or analyze problems with next-generation 3D intelligence.</p>
+
+          <!-- 3D Categorized Suggestion Cards -->
+          <div class="suggestion-grid">
+            <button class="suggestion-card liquid-glass" data-tilt="true" data-prompt="Explain quantum computing in simple terms with an intuitive real-life analogy.">
+              <div class="card-badge badge-science">Science</div>
+              <div class="card-icon-3d">⚛️</div>
+              <div class="card-text">
+                <div class="card-title">Explain quantum computing</div>
+                <div class="card-desc">With an intuitive everyday analogy</div>
+              </div>
+            </button>
+
+            <button class="suggestion-card liquid-glass" data-tilt="true" data-prompt="Write a modern Python script that fetches real-time cryptocurrency data from a public API with clean error handling.">
+              <div class="card-badge badge-code">Coding</div>
+              <div class="card-icon-3d">⚡</div>
+              <div class="card-text">
+                <div class="card-title">Write a Python script</div>
+                <div class="card-desc">Fetch API data with clean error handling</div>
+              </div>
+            </button>
+
+            <button class="suggestion-card liquid-glass" data-tilt="true" data-prompt="Help me brainstorm 5 unique AI startup ideas for 2026 with target audiences and monetization strategies.">
+              <div class="card-badge badge-ideas">Business</div>
+              <div class="card-icon-3d">💡</div>
+              <div class="card-text">
+                <div class="card-title">Brainstorm startup ideas</div>
+                <div class="card-desc">5 unique AI concepts with business models</div>
+              </div>
+            </button>
+
+            <button class="suggestion-card liquid-glass" data-tilt="true" data-prompt="Draft a polite and professional follow-up email after a job interview emphasizing gratitude and key strengths.">
+              <div class="card-badge badge-writing">Writing</div>
+              <div class="card-icon-3d">✉️</div>
+              <div class="card-text">
+                <div class="card-title">Draft a follow-up email</div>
+                <div class="card-desc">Polite, impressive, and professional</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Messages Container -->
+        <div class="messages-container" id="messagesContainer"></div>
+      </div>
+
+      <!-- Floating 3D Liquid Glass Input Bar -->
+      <div class="chat-input-section">
+        <div class="input-island liquid-glass" data-tilt="true">
+          <form id="chatForm" class="chat-form">
+            <textarea
+              id="userInput"
+              class="chat-textarea"
+              placeholder="Ask anything... (Press Shift + Enter for new line)"
+              rows="1"
+              autofocus
+            ></textarea>
+
+            <div class="input-actions">
+              <button type="button" class="stop-btn" id="stopBtn" title="Stop generating" style="display: none;">
+                <span class="stop-icon">■</span>
+                <span>Stop</span>
+              </button>
+              
+              <button type="submit" class="send-btn liquid-btn" id="sendBtn" title="Send message">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="19" x2="12" y2="5"></line>
+                  <polyline points="5 12 12 5 19 12"></polyline>
+                </svg>
+              </button>
+            </div>
+          </form>
+        </div>
+        <div class="input-footer-note">
+          <span>Aura 3D Intelligence. Fast, private, and powered by modern AI.</span>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Settings & Customization Modal -->
+  <div class="modal-backdrop" id="settingsModal">
+    <div class="modal-card liquid-glass" data-tilt="true">
+      <div class="modal-header">
+        <div class="modal-title-row">
+          <div class="modal-badge-gem">⚙️</div>
+          <h2>Preferences & 3D Live Wallpaper</h2>
+        </div>
+        <button class="icon-btn close-modal-btn" id="closeSettingsBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- 3D Live Wallpaper Mode -->
+        <div class="form-group">
+          <label>3D Live Wallpaper Mode</label>
+          <div class="wallpaper-options-grid">
+            <button type="button" class="wallpaper-choice-btn active" data-wallpaper="aurora">
+              <span class="wp-icon">🌌</span>
+              <span class="wp-name">Liquid Aurora</span>
+            </button>
+            <button type="button" class="wallpaper-choice-btn" data-wallpaper="galaxy">
+              <span class="wp-icon">⚡</span>
+              <span class="wp-name">3D Constellation</span>
+            </button>
+            <button type="button" class="wallpaper-choice-btn" data-wallpaper="starlight">
+              <span class="wp-icon">✨</span>
+              <span class="wp-name">Cosmic Stars</span>
+            </button>
+          </div>
+          <div class="field-hint">Interactive 3D canvas responds in real-time to your mouse movement.</div>
+        </div>
+
+        <!-- Accent Color Theme Picker -->
+        <div class="form-group">
+          <label>Liquid Glass Glow Color</label>
+          <div class="accent-picker-row">
+            <button type="button" class="accent-choice-btn active" data-accent="violet" title="Electric Violet" style="--btn-color: #8b5cf6;"></button>
+            <button type="button" class="accent-choice-btn" data-accent="cyan" title="Cyberpunk Cyan" style="--btn-color: #06b6d4;"></button>
+            <button type="button" class="accent-choice-btn" data-accent="emerald" title="Emerald Green" style="--btn-color: #10b981;"></button>
+            <button type="button" class="accent-choice-btn" data-accent="rose" title="Rose Gold" style="--btn-color: #f43f5e;"></button>
+            <button type="button" class="accent-choice-btn" data-accent="amber" title="Golden Amber" style="--btn-color: #f59e0b;"></button>
+          </div>
+          <div class="field-hint">Changes the chromatic refraction and glow color across the whole site.</div>
+        </div>
+
+        <!-- Gemini Key -->
+        <div class="form-group">
+          <label for="geminiKeyInput">
+            <span>Google Gemini API Key</span>
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" class="helper-link">Get Free Key ↗</a>
+          </label>
+          <input type="password" id="geminiKeyInput" placeholder="AIzaSy..." autocomplete="off">
+          <div class="field-hint">Powers Gemini 3.6 Flash, 2.5 Flash, and 1.5 Pro. Saved locally in your browser.</div>
+        </div>
+
+        <!-- OpenAI Key -->
+        <div class="form-group">
+          <label for="openaiKeyInput">
+            <span>OpenAI API Key</span>
+            <a href="https://platform.openai.com/api-keys" target="_blank" class="helper-link">Get Key ↗</a>
+          </label>
+          <input type="password" id="openaiKeyInput" placeholder="sk-..." autocomplete="off">
+          <div class="field-hint">Powers ChatGPT (GPT-4o, GPT-4o Mini).</div>
+        </div>
+
+        <!-- System Prompt -->
+        <div class="form-group">
+          <label for="systemPromptInput">AI Persona & Custom Instructions</label>
+          <textarea id="systemPromptInput" rows="3" placeholder="You are Aura AI, a brilliant, friendly, and helpful AI assistant..."></textarea>
+          <div class="field-hint">Defines the personality and structure of AI replies.</div>
+        </div>
+
+        <!-- Temperature -->
+        <div class="form-group">
+          <div class="slider-label-row">
+            <label for="tempInput">Creativity Level (Temperature)</label>
+            <span id="tempValueDisplay" class="temp-badge">0.7</span>
+          </div>
+          <input type="range" id="tempInput" min="0" max="1" step="0.05" value="0.7">
+          <div class="field-hint">Lower = precise and factual; Higher = inventive and creative.</div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelSettingsBtn">Cancel</button>
+        <button class="btn btn-primary liquid-btn" id="saveSettingsBtn">Save Preferences</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CDN Dependencies -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.9/purify.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>
